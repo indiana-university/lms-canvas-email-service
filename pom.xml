@@ -47,6 +47,9 @@
                     <!-- see goals wiki page for configuration options -->
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <noReleaseMerge>true</noReleaseMerge>
+                    <flowInitContext>
+                        <developBranchName>feature/4.x</developBranchName>
+                    </flowInitContext>
                 </configuration>
             </plugin>
         </plugins>
