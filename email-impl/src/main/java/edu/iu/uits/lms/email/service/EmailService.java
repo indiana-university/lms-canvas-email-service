@@ -30,6 +30,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -64,7 +65,8 @@ public class EmailService {
    @PostMapping("/send")
    @PreAuthorize("#oauth2.hasScope('email:send')")
    public void sendEmail(@RequestBody EmailDetails emailDetails,
-                         @RequestParam(name = "digitallySign", required = false, defaultValue = "true") boolean digitallySign) throws LmsEmailTooBigException, MessagingException {
+                         @RequestParam(name = "digitallySign", required = false, defaultValue = "true") boolean digitallySign,
+                         @RequestParam(name = "unsignedToEmailToUseInPreProd", required = false, defaultValue = "") String unsignedToEmailToUseInPreProd) throws LmsEmailTooBigException, MessagingException {
       String subject = emailDetails.getSubject();
       String body = emailDetails.getBody();
       String[] recipients = emailDetails.getRecipients();
@@ -116,6 +118,22 @@ public class EmailService {
          } catch (IOException e) {
             log.error("Bad email!", e);
             if (++count == maxTries) {
+               if (! "prd".equals(emailServiceConfig.getEnv())) {
+                  String preBody = "In production, this message will go to <p />\r\n";
+
+                  for (String recipient : recipients) {
+                     preBody += String.format("TO: %s <p />\r\n", recipient);
+                  }
+
+                  body = preBody + "\n\n" + body;
+
+                  recipients = new String[] {   unsignedToEmailToUseInPreProd != null &&
+                                                unsignedToEmailToUseInPreProd.trim().length() > 0
+                                              ? unsignedToEmailToUseInPreProd
+                                              : emailServiceConfig.getDefaultUnsignedTo() };
+
+               }
+
                sendUnsignedEmail(recipients, subject, body, emailServiceAttachmentList, enableHtml, priority, from);
                break;
             }

@@ -19,6 +19,7 @@ lmsemail:
   enabled: false
   signingEnabled: false
   defaultFrom: essnorep@iu.edu
+  defaultUnsignedTo: iu-uits-es-ess-lms-notify@exchange.iu.edu
   env: ${app.env}
 ---
 
