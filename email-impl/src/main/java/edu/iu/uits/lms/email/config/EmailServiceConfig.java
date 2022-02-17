@@ -13,5 +13,6 @@ public class EmailServiceConfig {
    private boolean enabled;
    private boolean signingEnabled;
    private String defaultFrom;
+   private String defaultUnsignedTo;
    private String env;
 }
