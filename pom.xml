@@ -4,7 +4,7 @@
     <artifactId>lms-email-parent</artifactId>
     <packaging>pom</packaging>
     <name>lms-email-parent</name>
-    <version>4.0.15</version>
+    <version>4.0.16</version>
 
     <parent>
         <artifactId>lms2Wow</artifactId>
@@ -27,4 +27,31 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>external.atlassian.jgitflow</groupId>
+                <artifactId>jgitflow-maven-plugin</artifactId>
+                <version>${jgitflow.version}</version>
+                <dependencies>
+                    <!-- https://ecosystem.atlassian.net/browse/MJF-299 -->
+                    <!-- 2018-10-16: Must have been a recent change to github.iu.edu that removed support for a security algorithm -->
+                    <!-- Adding in an updated dependency to help -->
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>0.1.55</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <!-- see goals wiki page for configuration options -->
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <flowInitContext>
+                        <developBranchName>4.x-develop</developBranchName>
+                        <masterBranchName>4.x-master</masterBranchName>
+                    </flowInitContext>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
